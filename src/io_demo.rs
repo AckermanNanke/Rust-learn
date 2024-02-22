@@ -1,17 +1,9 @@
-use std::{env, fs};
+use std::{env, error::Error, fs, process};
 
 #[derive(Debug)]
 struct ConfigParam {
     quary: String,
     path: String,
-}
-
-pub fn run_io_demo1() {
-    let args: Vec<String> = env::args().collect();
-    let a = ConfigParam::get_config_params(&args)?;
-    // let contents = fs::read_to_string(a);
-    dbg!(args);
-    dbg!(a);
 }
 
 impl ConfigParam {
@@ -20,8 +12,28 @@ impl ConfigParam {
             return Err("缺少命令行参数！");
         }
         Ok(ConfigParam {
-            quary: params[0].clone(),
-            path: params[0].clone(),
+            quary: params[1].clone(),
+            path: params[2].clone(),
         })
+    }
+}
+
+fn read_file_form_path(config_param: &ConfigParam) -> Result<(), Box<dyn Error>> {
+    let file_info: String = fs::read_to_string(&config_param.path)?;
+    println!("文件信息： {}", file_info);
+    Ok(())
+}
+
+// 第一个例子
+pub fn run_io_demo1() {
+    let args: Vec<String> = env::args().collect();
+    let config_param = ConfigParam::get_config_params(&args).unwrap_or_else(|err| {
+        println!("问题原因: {err}");
+        process::exit(1);
+    });
+    dbg!(&args[1]);
+    if let Err(e) = read_file_form_path(&config_param) {
+        println!("打开文件出错: {e}");
+        process::exit(1);
     }
 }

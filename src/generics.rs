@@ -33,7 +33,7 @@ fn genericsDemo2() {
     print!("genericsstruct = {:#?}", genericsstruct);
 }
 
-pub fn runGenericsDemo() {
+pub fn run_generics_demo() {
     let list = vec![23, 45, 34, 4];
     genericsDemo1(&list);
     genericsDemo2();
