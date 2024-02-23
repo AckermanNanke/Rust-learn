@@ -19,11 +19,20 @@ impl ConfigParam {
 }
 
 fn read_file_form_path(config_param: &ConfigParam) -> Result<(), Box<dyn Error>> {
-    let file_info: String = fs::read_to_string(&config_param.path)?;
-    println!("文件信息： {}", file_info);
+    let file_info = fs::read_to_string(&config_param.path)?;
+    search(&config_param.quary, &file_info);
     Ok(())
 }
 
+fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    let mut results = Vec::new();
+    for item in contents.lines() {
+        if item.contains(query) {
+            results.push(item)
+        }
+    }
+    results
+}
 // 第一个例子
 pub fn run_io_demo1() {
     let args: Vec<String> = env::args().collect();
