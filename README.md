@@ -1,2 +1,3 @@
-# Rust-learn
-Rust学习记录
+# rust_learn
+
+Rust 学习记录

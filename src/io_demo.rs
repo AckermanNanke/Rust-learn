@@ -1,9 +1,11 @@
+use rust_learn;
 use std::{env, error::Error, fs, process};
 
 #[derive(Debug)]
 struct ConfigParam {
     quary: String,
     path: String,
+    ignore_case: bool,
 }
 
 impl ConfigParam {
@@ -14,27 +16,24 @@ impl ConfigParam {
         Ok(ConfigParam {
             quary: params[1].clone(),
             path: params[2].clone(),
+            ignore_case: true,
         })
     }
 }
 
 fn read_file_form_path(config_param: &ConfigParam) -> Result<(), Box<dyn Error>> {
     let file_info = fs::read_to_string(&config_param.path)?;
-    for line in search(&config_param.quary, &file_info) {
+    let results = if config_param.ignore_case {
+        rust_learn::search(&config_param.quary, &file_info)
+    } else {
+        rust_learn::search_case_insensitive(&config_param.quary, &file_info)
+    };
+    for line in results {
         println!("search_vec_item = {}", line);
     }
     Ok(())
 }
 
-fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut results = Vec::new();
-    for item in contents.lines() {
-        if item.contains(query) {
-            results.push(item)
-        }
-    }
-    results
-}
 // 第一个例子
 pub fn run_io_demo1() {
     let args: Vec<String> = env::args().collect();
