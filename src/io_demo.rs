@@ -20,7 +20,9 @@ impl ConfigParam {
 
 fn read_file_form_path(config_param: &ConfigParam) -> Result<(), Box<dyn Error>> {
     let file_info = fs::read_to_string(&config_param.path)?;
-    search(&config_param.quary, &file_info);
+    for line in search(&config_param.quary, &file_info) {
+        println!("search_vec_item = {}", line);
+    }
     Ok(())
 }
 

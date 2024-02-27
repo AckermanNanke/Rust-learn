@@ -25,4 +25,27 @@ mod Test {
         }
         results
     }
+    #[test]
+    fn case_insensitive() {
+        let q = "ruST";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.
+Trust me.";
+        assert_eq!(
+            vec!["Rust:", "Trust me."],
+            search_case_insensitive(q, contents)
+        );
+    }
+    fn search_case_insensitive<'a>(q: &'a str, c: &'a str) -> Vec<&'a str> {
+        let q = q.to_uppercase();
+        let mut results = Vec::new();
+        for item in c.lines() {
+            if item.to_uppercase().contains(&q) {
+                results.push(item)
+            }
+        }
+        results
+    }
 }
