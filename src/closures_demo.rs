@@ -31,6 +31,7 @@ fn run_closures_demo1() {
     let storeShirts = Inventtory {
         shirts: vec![ShirtColor::Red, ShirtColor::Red, ShirtColor::Red],
     };
+    storeShirts
 }
 
 pub fn run_closures_demo() {
