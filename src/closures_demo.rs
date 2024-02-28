@@ -27,5 +27,12 @@ impl Inventtory {
         }
     }
 }
+fn run_closures_demo1() {
+    let storeShirts = Inventtory {
+        shirts: vec![ShirtColor::Red, ShirtColor::Red, ShirtColor::Red],
+    };
+}
 
-pub fn run_closures_demo() {}
+pub fn run_closures_demo() {
+    run_closures_demo1()
+}
