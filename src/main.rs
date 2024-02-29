@@ -15,5 +15,5 @@ fn main() {
     // run_trait_demo();
     // run_lifetime_demo();
     // run_io_demo1();
-    run_trait_demo();
+    run_closures_demo();
 }

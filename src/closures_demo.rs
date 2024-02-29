@@ -16,8 +16,8 @@ impl Inventtory {
         let mut num_blue = 0;
         for i in &self.shirts {
             match i {
-                Red => num_red += 1,
-                Blue => num_blue += 1,
+                ShirtColor::Red => num_red += 1,
+                ShirtColor::Blue => num_blue += 1,
             }
         }
         if num_red > num_blue {
@@ -31,7 +31,18 @@ fn run_closures_demo1() {
     let storeShirts = Inventtory {
         shirts: vec![ShirtColor::Red, ShirtColor::Red, ShirtColor::Red],
     };
-    storeShirts
+    let user_preference1: Option<ShirtColor> = Some(ShirtColor::Blue);
+    let giveaway1 = storeShirts.giveaway(user_preference1);
+    println!(
+        "The user with preference {:?} gets {:?}",
+        user_preference1, giveaway1
+    );
+    let user_preference2: Option<ShirtColor> = Some(ShirtColor::Red);
+    let giveaway2 = storeShirts.giveaway(user_preference1);
+    println!(
+        "The user with preference {:?} gets {:?}",
+        user_preference2, giveaway2
+    );
 }
 
 pub fn run_closures_demo() {
