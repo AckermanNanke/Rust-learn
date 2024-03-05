@@ -28,23 +28,33 @@ impl Inventtory {
     }
 }
 fn run_closures_demo1() {
-    let storeShirts = Inventtory {
-        shirts: vec![ShirtColor::Red, ShirtColor::Red, ShirtColor::Red],
+    let store_shirts = Inventtory {
+        shirts: vec![ShirtColor::Red, ShirtColor::Red, ShirtColor::Blue],
     };
     let user_preference1: Option<ShirtColor> = Some(ShirtColor::Blue);
-    let giveaway1 = storeShirts.giveaway(user_preference1);
+    let giveaway1 = store_shirts.giveaway(user_preference1);
     println!(
         "The user with preference {:?} gets {:?}",
         user_preference1, giveaway1
     );
-    let user_preference2: Option<ShirtColor> = Some(ShirtColor::Red);
-    let giveaway2 = storeShirts.giveaway(user_preference1);
+    let user_preference2: Option<ShirtColor> = None;
+    let giveaway2 = store_shirts.giveaway(user_preference2);
     println!(
         "The user with preference {:?} gets {:?}",
         user_preference2, giveaway2
     );
 }
 
+fn run_closures_demo2() {
+    let mut list = vec![1, 2, 3];
+    println!("Before defining closure: {:?}", list);
+
+    let mut borrows_mutably = || list.push(7);
+
+    borrows_mutably();
+    println!("After calling closure: {:?}", list);
+}
 pub fn run_closures_demo() {
-    run_closures_demo1()
+    run_closures_demo1();
+    run_closures_demo2();
 }
