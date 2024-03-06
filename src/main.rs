@@ -16,7 +16,7 @@ fn main() {
     // run_generics_demo();
     // run_trait_demo();
     // run_lifetime_demo();
-    // run_io_demo1();
+    run_io_demo1();
     // run_closures_demo();
-    run_iterator_demo();
+    // run_iterator_demo();
 }

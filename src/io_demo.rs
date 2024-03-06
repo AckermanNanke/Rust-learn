@@ -9,14 +9,23 @@ struct ConfigParam {
 }
 
 impl ConfigParam {
-    fn get_config_params(params: &[String]) -> Result<ConfigParam, &'static str> {
-        if params.len() < 3 {
-            return Err("缺少命令行参数！");
-        }
+    fn get_config_params(
+        mut params: impl Iterator<Item = String>,
+    ) -> Result<ConfigParam, &'static str> {
+        // 使用迭代器修改方法
+        params.next();
+        let quary = match params.next() {
+            Some(params) => params,
+            None => return Err("缺少比较参数"),
+        };
+        let path = match params.next() {
+            Some(params) => params,
+            None => return Err("缺少路径参数"),
+        };
         let ignore_case = env::var("IGNORE_CASE").is_ok();
         Ok(ConfigParam {
-            quary: params[1].clone(),
-            path: params[2].clone(),
+            quary,
+            path,
             ignore_case,
         })
     }
@@ -37,8 +46,7 @@ fn read_file_form_path(config_param: &ConfigParam) -> Result<(), Box<dyn Error>>
 
 // 第一个例子
 pub fn run_io_demo1() {
-    let args: Vec<String> = env::args().collect();
-    let config_param = ConfigParam::get_config_params(&args).unwrap_or_else(|err| {
+    let config_param = ConfigParam::get_config_params(env::args()).unwrap_or_else(|err| {
         eprintln!("问题原因: {err}");
         process::exit(1);
     });
