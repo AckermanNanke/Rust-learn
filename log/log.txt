@@ -1,0 +1,2 @@
+The user with preference Some(Blue) gets Blue
+The user with preference Some(Red) gets Blue
