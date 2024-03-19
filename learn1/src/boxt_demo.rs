@@ -40,6 +40,6 @@ fn run_boxt_demo1() {
 }
 
 pub fn run_boxt_demo() {
-    run_boxt_demo1();
+    // run_boxt_demo1();
     run_boxt_demo2();
 }

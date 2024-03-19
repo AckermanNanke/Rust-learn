@@ -27,7 +27,7 @@ struct LifetimeStruct<'a> {
 fn run_lifetime_demo2() {
     let a = "123";
     let b = "456";
-    let c = "789";
+    let c = String::from("789");
     println!("run_lifetime_demo2 = {}", get_str(a, b, c))
 }
 fn get_str<'a, T>(x: &'a str, y: &'a str, z: T) -> &'a str
