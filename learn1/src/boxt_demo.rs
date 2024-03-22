@@ -50,7 +50,7 @@ fn run_boxt_demo_drop() {
         data: String::from("other stuff"),
     };
     drop(c);
-    println!("Dropping DropBox with data `{:#?}`!", c);
+    // println!("Dropping DropBox with data `{:#?}`!", c);
     println!("Dropping DropBox with data `{:#?}`!", d);
 }
 

@@ -1,3 +1,5 @@
+use std::string;
+
 pub fn add(left: usize, right: usize) -> usize {
     left + right
 }
@@ -37,4 +39,8 @@ pub fn search_case_insensitive<'a>(q: &'a str, c: &'a str) -> Vec<&'a str> {
         }
     }
     results
+}
+
+trait Ceshi {
+    fn cd(&mut self, val: String);
 }

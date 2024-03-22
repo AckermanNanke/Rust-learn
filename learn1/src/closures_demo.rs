@@ -66,7 +66,17 @@ fn run_closures_demo2() {
     // borrows_mutably1();
     println!("可变闭包引用值 {:?}", list1);
 }
+
+// 多线程移动所有权到闭包内
+fn run_closures_demo3() {
+    let list = vec![1, 2, 3];
+    println!("Before defining closure: {:?}", list);
+    thread::spawn(move || println!("From thread: {:?}", list))
+        .join()
+        .unwrap();
+}
 pub fn run_closures_demo() {
     run_closures_demo1();
     run_closures_demo2();
+    run_closures_demo3();
 }
