@@ -1,18 +1,3 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
-
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     // 使用迭代器版本
     contents
@@ -37,8 +22,4 @@ pub fn search_case_insensitive<'a>(q: &'a str, c: &'a str) -> Vec<&'a str> {
         }
     }
     results
-}
-
-trait Ceshi {
-    fn cd(&mut self, val: String);
 }
