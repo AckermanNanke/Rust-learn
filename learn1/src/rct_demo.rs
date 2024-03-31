@@ -1,4 +1,7 @@
-use std::{cell::RefCell, rc::Rc};
+use std::{
+    cell::RefCell,
+    rc::{Rc, Weak},
+};
 
 use crate::rct_demo::List::{Cons, Nil};
 // Cons 成员拥有其储存的数据，所以当创建 b 列表时，a 被移动进了 b 这样 b 就拥有了 a。接着当再次尝试使用 a 创建 c 时，这不被允许，因为 a 的所有权已经被移动。
@@ -42,8 +45,14 @@ impl List {
     }
 }
 
-// 需要使用 use 语句将 Rc<T> 引入作用域，因为它不在 prelude 中。在 main 中创建了存放 5 和 10 的列表并将其存放在 a 的新的 Rc<List> 中。接着当创建 b 和 c 时，调用 Rc::clone 函数并传递 a 中 Rc<List> 的引用作为参数。
-// 也可以调用 a.clone() 而不是 Rc::clone(&a)，不过在这里 Rust 的习惯是使用 Rc::clone。Rc::clone 的实现并不像大部分类型的 clone 实现那样对所有数据进行深拷贝。Rc::clone 只会增加引用计数，这并不会花费多少时间。深拷贝可能会花费很长时间。通过使用 Rc::clone 进行引用计数，可以明显的区别深拷贝类的克隆和增加引用计数类的克隆。当查找代码中的性能问题时，只需考虑深拷贝类的克隆而无需考虑 Rc::clone 调用。
+// 树节点
+#[derive(Debug)]
+struct Node {
+    value: i32,
+    parent: RefCell<Weak<Node>>,
+    children: RefCell<Vec<Rc<Node>>>,
+}
+
 fn run_rct_demo1() {
     let a = Rc::new(Cons(5, RefCell::new(Rc::new(Nil))));
     println!("a 引用计数 = {}", Rc::strong_count(&a));
@@ -61,8 +70,23 @@ fn run_rct_demo1() {
     println!("a rc count after changing a = {}", Rc::strong_count(&a));
     println!("b rc count after changing a = {}", Rc::strong_count(&b));
 
-    //取消下一行的注释，看到我们有一个循环;它将溢出堆栈
+    //取消下一行的注释，将溢出堆栈，因为引用循环
     // println!("a next item = {:?}", a.tail());
+}
+
+fn run_rct_demo2() {
+    let leaf = Rc::new(Node {
+        value: 3,
+        parent: RefCell::new(Weak::new()),
+        children: RefCell::new(vec![]),
+    });
+    let branch = Rc::new(Node {
+        value: 2,
+        parent: RefCell::new(Weak::new()),
+        children: RefCell::new(vec![Rc::clone(&leaf)]),
+    });
+    *leaf.parent.borrow_mut() = Rc::downgrade(&branch);
+    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
 }
 pub fn run_rct_demo() {
     run_rct_demo1();
