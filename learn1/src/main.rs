@@ -1,12 +1,14 @@
 // use crate::boxt_demo::run_boxt_demo;
-use crate::rct_demo::run_rct_demo;
+// use crate::rct_demo::run_rct_demo;
+use crate::thread_demo::run_thread_demo;
 // use crate::closures_demo::run_closures_demo;
 // use crate::generics::run_generics_demo;
 // use crate::io_demo::run_io_demo1;
 // use crate::iterator_demo::run_iterator_demo;
 // use crate::lifetime_demo::run_lifetime_demo;
 // use crate::trait_demo::run_trait_demo;
-mod rct_demo;
+mod thread_demo;
+// mod rct_demo;
 // mod boxt_demo;
 // mod closures_demo;
 // mod generics;
@@ -24,5 +26,6 @@ fn main() {
     // run_closures_demo();
     // run_iterator_demo();
     // run_boxt_demo();
-    run_rct_demo();
+    // run_rct_demo();
+    run_thread_demo();
 }
