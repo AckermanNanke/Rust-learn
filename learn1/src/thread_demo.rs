@@ -1,8 +1,88 @@
 // 多线程处理
 
-use std::{sync::mpsc, thread, time::Duration};
+use std::{
+    rc::Rc,
+    sync::{mpsc, Arc, Mutex},
+    thread,
+    time::Duration,
+};
 
-fn run_thread_demo3() {
+// 互斥锁
+fn run_thread_mutex() {
+    let mut counter = Arc::new(Mutex::new(0));
+    let mut hadles = vec![];
+    for _ in 0..10 {
+        let counter = Arc::clone(&counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+            *num += 1;
+            println!("num = {:?}", num);
+        });
+        hadles.push(handle);
+    }
+
+    for handle in hadles {
+        handle.join().unwrap();
+    }
+    println!("counter = {:?}", *counter.lock().unwrap());
+}
+
+// 互斥锁死锁
+// fn run_thread_mutex_error() {
+//     let counter1 = Arc::new(Mutex::new(0));
+//     let counter2 = Arc::new(Mutex::new(0));
+//     let c1 = Arc::clone(&counter1);
+
+//     let mut h1 = vec![];
+
+//     let hl1 = thread::spawn(move || {
+//         let num1 = counter1.lock().unwrap();
+//         println!("hl1.num1 = {:?}", num1);
+//         let num2 = c1.lock().unwrap();
+//         println!("hl1.num2 = {:?}", num2);
+//     });
+//     h1.push(hl1);
+
+//     for handle in h1 {
+//         handle.join().unwrap();
+//     }
+// }
+fn run_thread_mutex_error() {
+    let counter1 = Arc::new(Mutex::new(0));
+    let counter2 = Arc::new(Mutex::new(0));
+
+    let c1 = Arc::clone(&counter2);
+    let c2 = Arc::clone(&counter1);
+
+    let mut h1 = vec![];
+    let mut h2 = vec![];
+
+    let hl1 = thread::spawn(move || {
+        let num1 = counter1.lock().unwrap();
+        println!("hl1.num1 = {:?}", num1);
+        let num2 = c2.lock().unwrap();
+        println!("hl1.num2 = {:?}", num2);
+    });
+    h1.push(hl1);
+
+    let hl2 = thread::spawn(move || {
+        let num2 = c1.lock().unwrap();
+        let num1 = counter2.lock().unwrap();
+        println!("hl2.num2 = {:?}", num2);
+        println!("hl2.num1 = {:?}", num1);
+    });
+    h2.push(hl2);
+
+    for handle in h1 {
+        handle.join().unwrap();
+    }
+    for handle in h2 {
+        handle.join().unwrap();
+    }
+}
+
+// 信道
+fn run_thread_channel() {
     let (tx, rx) = mpsc::channel();
     let tx1 = tx.clone();
 
@@ -57,5 +137,7 @@ fn run_thread_demo1() {
 pub fn run_thread_demo() {
     // run_thread_demo1();
     // run_thread_demo2();
-    run_thread_demo3();
+    // run_thread_channel();
+    // run_thread_mutex();
+    run_thread_mutex_error();
 }
