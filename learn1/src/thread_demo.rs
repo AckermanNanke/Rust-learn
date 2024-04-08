@@ -27,10 +27,9 @@ fn run_thread_mutex() {
     println!("counter = {:?}", *counter.lock().unwrap());
 }
 
-// 互斥锁死锁
+// 互斥锁死锁，循环引用触发
 // fn run_thread_mutex_error() {
 //     let counter1 = Arc::new(Mutex::new(0));
-//     let counter2 = Arc::new(Mutex::new(0));
 //     let c1 = Arc::clone(&counter1);
 
 //     let mut h1 = vec![];
@@ -47,38 +46,43 @@ fn run_thread_mutex() {
 //         handle.join().unwrap();
 //     }
 // }
+
+// 一定几率触发死锁
 fn run_thread_mutex_error() {
-    let counter1 = Arc::new(Mutex::new(0));
-    let counter2 = Arc::new(Mutex::new(0));
+    let c1 = Arc::new(Mutex::new(0));
+    let c2 = Arc::new(Mutex::new(0));
+    let mut hs: Vec<_> = vec![];
 
-    let c1 = Arc::clone(&counter2);
-    let c2 = Arc::clone(&counter1);
+    {
+        let c1 = Arc::clone(&c1);
+        let c2 = Arc::clone(&c2);
 
-    let mut h1 = vec![];
-    let mut h2 = vec![];
-
-    let hl1 = thread::spawn(move || {
-        let num1 = counter1.lock().unwrap();
-        println!("hl1.num1 = {:?}", num1);
-        let num2 = c2.lock().unwrap();
-        println!("hl1.num2 = {:?}", num2);
-    });
-    h1.push(hl1);
-
-    let hl2 = thread::spawn(move || {
-        let num2 = c1.lock().unwrap();
-        let num1 = counter2.lock().unwrap();
-        println!("hl2.num2 = {:?}", num2);
-        println!("hl2.num1 = {:?}", num1);
-    });
-    h2.push(hl2);
-
-    for handle in h1 {
-        handle.join().unwrap();
+        let h = thread::spawn(move || {
+            let mut num1 = c1.lock().unwrap();
+            *num1 += 1;
+            let mut num2 = c2.lock().unwrap();
+            *num2 += 1;
+        });
+        hs.push(h);
     }
-    for handle in h2 {
-        handle.join().unwrap();
+
+    {
+        let c1 = Arc::clone(&c1);
+        let c2 = Arc::clone(&c2);
+
+        let h = thread::spawn(move || {
+            let mut num1 = c1.lock().unwrap();
+            *num1 += 1;
+            let mut num2 = c2.lock().unwrap();
+            *num2 += 1;
+        });
+        hs.push(h);
     }
+
+    for h in hs {
+        h.join().unwrap();
+    }
+    println!("Done {}", *c1.lock().unwrap()); // never reach here
 }
 
 // 信道
