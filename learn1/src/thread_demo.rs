@@ -51,7 +51,7 @@ fn run_thread_mutex() {
 fn run_thread_mutex_error() {
     let c1 = Arc::new(Mutex::new(0));
     let c2 = Arc::new(Mutex::new(0));
-    let mut hs: Vec<_> = vec![];
+    let mut hs = vec![];
 
     {
         let c1 = Arc::clone(&c1);
@@ -60,6 +60,7 @@ fn run_thread_mutex_error() {
         let h = thread::spawn(move || {
             let mut num1 = c1.lock().unwrap();
             *num1 += 1;
+            println!("Thread 1 holds a lock and starts waiting b lock");
             let mut num2 = c2.lock().unwrap();
             *num2 += 1;
         });
@@ -71,10 +72,11 @@ fn run_thread_mutex_error() {
         let c2 = Arc::clone(&c2);
 
         let h = thread::spawn(move || {
-            let mut num1 = c1.lock().unwrap();
-            *num1 += 1;
+            println!("Thread 2 holds b lock and starts waiting a lock");
             let mut num2 = c2.lock().unwrap();
             *num2 += 1;
+            let mut num1 = c1.lock().unwrap();
+            *num1 += 1;
         });
         hs.push(h);
     }
